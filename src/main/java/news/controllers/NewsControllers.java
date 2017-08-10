@@ -14,6 +14,8 @@ import javax.naming.NamingException;
 import java.io.IOException;
 import java.util.*;
 
+import static news.services.RssService.getAllArticles;
+
 /**
  * Created by Petar on 8/6/2017.
  */
@@ -30,6 +32,7 @@ public class NewsControllers {
 
     protected static List<Article> bild = new ArrayList<>();
     protected static List<Article> bloomberg = new ArrayList<>();
+    protected static List<Article> standart = new ArrayList<>();
 
     @RequestMapping("/bild")
     public String bild(Model model) {
@@ -62,11 +65,16 @@ public class NewsControllers {
         return "index";
     }
 
+    @RequestMapping("/standart")
+    public String standart(Model model) {
+        standart = getAllArticles();
+        model.addAttribute("allarticles", standart);
+        return "index";
+    }
     private void translateArticle(List<Article> articles,String key){
         int counter = 1;
         for (Article art : articles) {
             Article article = new Article();
-            article.setAuthor(art.getAuthor());
 //                article.setDescription(NewsServices.translate(art.getDescription()));
             article.setDescription(art.getDescription());
 //                article.setTitle(NewsServices.translate(art.getTitle()));

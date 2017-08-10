@@ -4,7 +4,6 @@ package news.models;
  * Created by Petar on 8/6/2017.
  */
 public class Article {
-    private String author;
 
     private String title;
 
@@ -34,14 +33,6 @@ public class Article {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public String getTitle() {

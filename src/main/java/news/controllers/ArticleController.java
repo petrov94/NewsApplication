@@ -17,6 +17,9 @@ import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static news.services.JsoupService.getTheMediaHtmlTag;
+import static news.services.RssService.getAllArticles;
+
 /**
  * Created by Petar on 8/7/2017.
  */
@@ -29,18 +32,32 @@ public class ArticleController {
         allarticles.addAll(NewsControllers.bloomberg);
         for(Article art : allarticles){
             if(art.getId().equals(url)){
-                Article translatedArt = new Article();
-                translatedArt.setTitle(NewsServices.translate(art.getTitle()));
-                translatedArt.setDescription(NewsServices.translate(art.getDescription()));
-                translatedArt.setPublishedAt(art.getPublishedAt());
-                String articleText = JsoupService.htmlParse(art.getUrl());
-                translatedArt.setText(NewsServices.translate(articleText));
-                translatedArt.setUrlToImage(art.getUrlToImage());
-                model.addAttribute("article",translatedArt);
-                break;
+                getAllArticles();
+//                String medianame = getTheMediaName(art.getUrl());
+//                Article translatedArt = new Article();
+////                translatedArt.setTitle(NewsServices.translate(art.getTitle()));
+//                translatedArt.setTitle(art.getTitle());
+////                translatedArt.setDescription(NewsServices.translate(art.getDescription()));
+//                translatedArt.setDescription(art.getDescription());
+//                translatedArt.setPublishedAt(art.getPublishedAt());
+//                String articleText = JsoupService.htmlParse(art.getUrl(),getTheMediaHtmlTag(medianame));
+////                translatedArt.setText(NewsServices.translate(articleText));
+//                translatedArt.setText(articleText);
+//                translatedArt.setUrlToImage(art.getUrlToImage());
+//                model.addAttribute("article",translatedArt);
+//                break;
             }
         }
         return "article";
+    }
+
+    private String getTheMediaName(String url){
+        for(String med : NewsControllers.media){
+            if(url.contains(med)){
+                return med;
+            }
+        }
+        return null;
     }
 
 }

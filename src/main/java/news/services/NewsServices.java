@@ -61,12 +61,6 @@ public class NewsServices {
         JsonArray results = obj.getJsonArray("articles");
         for (JsonObject result : results.getValuesAs(JsonObject.class)) {
             Article newArticle = new Article();
-            String author = result.getString("title");
-            if(author!=null){
-                newArticle.setAuthor(author);
-            } else{
-                newArticle.setAuthor("Не е споменат");
-            }
             newArticle.setTitle(result.getString("title"));
             newArticle.setDescription(result.getString("description"));
             newArticle.setUrl(result.getString("url"));
@@ -83,5 +77,7 @@ public class NewsServices {
         String translatedText = TranslateApi.translate(text, source, target);
         return translatedText;
     }
+
+
 
 }
