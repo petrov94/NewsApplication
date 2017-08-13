@@ -16,7 +16,7 @@ import com.sun.jersey.api.client.WebResource;
 /**
  * Created by Petar on 8/6/2017.
  */
-public class NewsServices {
+public class RestNewsServices {
     private static Map<String, String> map = new HashMap<String, String>();
     private static Map<String, String> langs = new HashMap<String, String>();
     static {
