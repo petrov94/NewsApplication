@@ -7,18 +7,22 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.swing.*;
 
+import news.controllers.ArticleController;
 import news.models.Article;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+
+import static news.services.JsoupService.getTheMediaHtmlTag;
 
 /**
  * Created by Petar on 8/6/2017.
  */
 public class RestNewsServices {
     private static Map<String, String> map = new HashMap<String, String>();
-    private static Map<String, String> langs = new HashMap<String, String>();
+//    private static Map<String, String> langs = new HashMap<String, String>();
     static {
         Map<String, String> temp = new HashMap<String, String>();
         temp.put("bild",
@@ -26,11 +30,11 @@ public class RestNewsServices {
         temp.put("bloomberg",
                 "https://newsapi.org/v1/articles?source=bloomberg&sortBy=top&apiKey=030df3ce40f34b1a8a2f410dddac8528");
         map = Collections.unmodifiableMap(temp);
-        try {
-           langs = TranslateApi.getLangs();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//           langs = TranslateApi.getLangs();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static List<Article> getAllArticles(String source){
@@ -66,18 +70,21 @@ public class RestNewsServices {
             newArticle.setUrl(result.getString("url"));
             newArticle.setUrlToImage(result.getString("urlToImage"));
             newArticle.setPublishedAt(result.getString("publishedAt"));
+            String medianame = ArticleController.getTheMediaName(newArticle.getUrl());
+            try {
+                String articleText = JsoupService.htmlParseDivId(newArticle.getUrl(), getTheMediaHtmlTag(medianame));
+            }catch (NullPointerException e){
+                continue;
+            }
             allArticles.add(newArticle);
         }
         return allArticles;
     }
 
-    public static String translate(String text) throws Exception {
-        String source = TranslateApi.detectLanguage(text);
-        String target = TranslateApi.getKey(langs, "bulgarian");
-        String translatedText = TranslateApi.translate(text, source, target);
-        return translatedText;
-    }
-
-
-
+//    public static String translate(String text) throws Exception {
+//        String source = TranslateApi.detectLanguage(text);
+//        String target = TranslateApi.getKey(langs, "bulgarian");
+//        String translatedText = TranslateApi.translate(text, source, target);
+//        return translatedText;
+//    }
 }

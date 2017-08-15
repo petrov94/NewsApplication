@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.validation.constraints.Null;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,10 +38,11 @@ public class JsoupService {
         htmlTags.put("dnes_img", "art_img");
         htmlTags.put("dnes", "art_start");
         htmlTags.put("kaldata_img", "entry-thumb td-modal-image");
+        htmlTags.put("gol", "article-text");
         html = Collections.unmodifiableMap(htmlTags);
     }
 
-    public static String htmlParseDivId(String url, String divID) {
+    public static String htmlParseDivId(String url, String divID) throws NullPointerException{
         Document doc;
         Elements info = null;
         Element info_ByID = null;
@@ -51,11 +53,12 @@ public class JsoupService {
                 info_ByID = doc.getElementById(divID);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new NullPointerException();
         }
         if (!info.isEmpty()) {
             return info.text();
         } else {
+            if(info_ByID.text()!= null && info_ByID.text().isEmpty()){ throw new NullPointerException();}
             return info_ByID.text();
         }
     }

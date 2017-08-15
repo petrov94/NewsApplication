@@ -21,37 +21,43 @@ public class ArticleController {
     @RequestMapping(value="/article",method = RequestMethod.GET,params = {"url"})
     public String article(@RequestParam(value="url", required = true) String url, Model model) throws Exception {
         List<Article> allarticles = new ArrayList<Article>();
-        allarticles.addAll(NewsControllers.bild);
-        allarticles.addAll(NewsControllers.bloomberg);
-        allarticles.addAll(NewsControllers.standart);
-        allarticles.addAll(NewsControllers.dnes);
-        allarticles.addAll(NewsControllers.kaldata);
+        allarticles.addAll(HomeController.getBild());
+        allarticles.addAll(HomeController.getBloomberg());
+        allarticles.addAll(HomeController.getStandart());
+        allarticles.addAll(HomeController.getDnes());
+        allarticles.addAll(HomeController.getKaldata());
+        allarticles.addAll(HomeController.getGol());
         for(Article art : allarticles){
             if(art.getId().equals(url)){
-                String medianame = getTheMediaName(art.getUrl());
-                Article translatedArt = new Article();
-//                translatedArt.setTitle(RestNewsServices.translate(art.getTitle()));
-                translatedArt.setTitle(art.getTitle());
-//                translatedArt.setDescription(RestNewsServices.translate(art.getDescription()));
-                translatedArt.setDescription(art.getDescription());
-                translatedArt.setPublishedAt(art.getPublishedAt());
-                String articleText = null;
-                if(!medianame.equals("kaldata")) {
-                    articleText = JsoupService.htmlParseDivId(art.getUrl(), getTheMediaHtmlTag(medianame));
-                }else{
-                    articleText = JsoupService.getKaldata(art.getUrl(),false);
-                }
-//                translatedArt.setText(RestNewsServices.translate(articleText));
-                translatedArt.setText(articleText);
-                translatedArt.setUrlToImage(art.getUrlToImage());
-                model.addAttribute("article",translatedArt);
+                model.addAttribute("article",getArticleText(art));
                 break;
             }
         }
         return "article";
     }
+    public static Article getArticleText(Article art){
+        String medianame = getTheMediaName(art.getUrl());
+        Article translatedArt = new Article();
+//                translatedArt.setTitle(RestNewsServices.translate(art.getTitle()));
+        translatedArt.setTitle(art.getTitle());
+//                translatedArt.setDescription(RestNewsServices.translate(art.getDescription()));
+        translatedArt.setDescription(art.getDescription());
+        translatedArt.setPublishedAt(art.getPublishedAt());
+        String articleText = null;
+        if(!medianame.equals("kaldata")) {
+            articleText = JsoupService.htmlParseDivId(art.getUrl(), getTheMediaHtmlTag(medianame));
+        }else{
+            articleText = JsoupService.getKaldata(art.getUrl(),false);
+        }
+//                translatedArt.setText(RestNewsServices.translate(articleText));
+        translatedArt.setText(articleText);
+        if(art.getUrlToImage()!=null) {
+            translatedArt.setUrlToImage(art.getUrlToImage());
+        }
+        return translatedArt;
+    }
 
-    public String getTheMediaName(String url){
+    public static String getTheMediaName(String url){
         for(String med : NewsControllers.media){
             if(url.contains(med)){
                 return med;

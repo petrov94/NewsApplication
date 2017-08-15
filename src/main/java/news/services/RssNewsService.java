@@ -1,5 +1,6 @@
 package news.services;
 
+import news.controllers.ArticleController;
 import news.models.Article;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,6 +23,7 @@ import static news.services.JsoupService.getTheMediaHtmlTag;
  */
 public class RssNewsService {
     private static Map<String, String> map = new HashMap<String, String>();
+
     static {
         Map<String, String> temp = new HashMap<String, String>();
         temp.put("standart",
@@ -30,18 +32,21 @@ public class RssNewsService {
                 "http://www.dnes.bg/rss.php?today");
         temp.put("kaldata",
                 "https://www.kaldata.com/feed");
+        temp.put("gol",
+                "http://www.gol.bg/rss/latest");
         map = Collections.unmodifiableMap(temp);
     }
-    public static List<Article> getAllArticles(String source){
+
+    public static List<Article> getAllArticles(String source) {
         assert source != null;
-        if(map.containsKey(source)){
+        if (map.containsKey(source)) {
             String url = map.get(source);
-            return getAllArticlesByRss(url,source);
+            return getAllArticlesByRss(url, source);
         }
         return null;
     }
 
-    public static List<Article> getAllArticlesByRss(String urlMedia,String media){
+    public static List<Article> getAllArticlesByRss(String urlMedia, String media) {
         List<Article> allRssArticles = new ArrayList<>();
         try {
             DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -59,36 +64,45 @@ public class RssNewsService {
                     continue;
                 Element e = (Element) n;
                 String imageUrl = "";
-                if(!media.equals("kaldata")) {
-                    imageUrl = JsoupService.getImage(e.getElementsByTagName("link").item(0).getTextContent(), getTheMediaHtmlTag(media + "_img"), e.getElementsByTagName("title").item(0).getTextContent());
-                }else {
+                if (media.equals("kaldata")) {
                     imageUrl = JsoupService.getKaldata(e.getElementsByTagName("link").item(0).getTextContent(), true);
+                } else if (media.equals("gol")) {
+                    imageUrl = e.getElementsByTagName("img").item(0).getTextContent();
+                } else {
+                    imageUrl = JsoupService.getImage(e.getElementsByTagName("link").item(0).getTextContent(), getTheMediaHtmlTag(media + "_img"), e.getElementsByTagName("title").item(0).getTextContent());
                 }
                 Article art = new Article();
                 art.setTitle(e.getElementsByTagName("title").item(0).getTextContent());
-                if(imageUrl!=null) {
+                if (imageUrl != null) {
                     art.setUrlToImage(imageUrl);
                     //throw NEW EXCEPTION!!!!!!
                 }
                 art.setUrl(e.getElementsByTagName("link").item(0).getTextContent());
-                if(media.equals("standart")||media.equals("kaldata")) {
+                if (media.equals("standart") || media.equals("kaldata") || media.equals("gol")) {
                     art.setPublishedAt(e.getElementsByTagName("pubDate").item(0).getTextContent());
-                }else{
+                } else {
                     art.setPublishedAt(e.getElementsByTagName("dc:date").item(0).getTextContent());
-                    System.out.println(e.getElementsByTagName("dc:date").item(0).getTextContent());
                 }
-                if(media.equals("kaldata")) {
+                if (media.equals("kaldata")) {
                     String p[] = e.getElementsByTagName("description").item(0).getTextContent().split("<p>");
                     String p1[] = p[1].split("</p>");
                     art.setDescription(p1[0]);
-                }else{
+                } else {
                     art.setDescription(e.getElementsByTagName("description").item(0).getTextContent());
                 }
-                art.setId(Integer.toString(counter)+media);
+                art.setId(Integer.toString(counter) + media);
+                String medianame = ArticleController.getTheMediaName(art.getUrl());
+                if (medianame.equals("bloomberg")) {
+                    try {
+                        String articleText = JsoupService.htmlParseDivId(art.getUrl(), getTheMediaHtmlTag(medianame));
+                    } catch (NullPointerException ex) {
+                        continue;
+                    }
+                }
                 counter++;
                 allRssArticles.add(art);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.getMessage();
         }
         return allRssArticles;
