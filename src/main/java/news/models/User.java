@@ -1,13 +1,12 @@
 package news.models;
 
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * Created by Petar on 8/19/2017.
  */
-public class Users implements Serializable{
+public class User implements Serializable{
     private static final long serialVersionUID = 1L;
     private Integer id;
     private String username;

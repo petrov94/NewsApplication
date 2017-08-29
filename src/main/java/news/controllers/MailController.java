@@ -25,7 +25,6 @@ public class MailController {
         String[] mediaName = url.split("_");
         ArrayList<Article> allArticles = getAllSubscribedArticles(mediaName);
         PdfService.createPdf(allArticles);
-
         return "subscription";
     }
 

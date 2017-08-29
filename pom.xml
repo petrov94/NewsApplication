@@ -110,25 +110,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.38</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/net.sourceforge.nekohtml/nekohtml -->
+        </dependency><!-- https://mvnrepository.com/artifact/net.sourceforge.nekohtml/nekohtml -->
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
-            <version>1.9.21</version><!--$NO-MVN-MAN-VER$-->
+            <version>1.9.21</version>
         </dependency>
     </dependencies>
 

@@ -3,11 +3,17 @@ package news.controllers;
 import news.models.Article;
 import news.services.RestNewsServices;
 import news.services.RssNewsService;
+import news.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -87,6 +93,24 @@ public class HomeController {
 
     @RequestMapping("/")
     public String index() {
-        return "index";
+        return "login";
+    }
+    @RequestMapping(value="/login",method = RequestMethod.POST)
+    public ModelAndView login(@RequestParam Map<String,String> requestParams) throws SQLException, ClassNotFoundException {
+        ModelAndView model = new ModelAndView("login");
+        String userName=requestParams.get("username");
+        String password=requestParams.get("password");
+
+        UserService service = new UserService();
+        boolean loginSuccess = service.getUserByNameAndPassword(userName,password);
+        if(!loginSuccess) {
+            model.addObject("error", loginSuccess);
+            return model;
+        }
+        return new ModelAndView("redirect:/standart");
+    }
+    @RequestMapping(value="/registration",method = RequestMethod.GET)
+    public String registration(){
+        return "registration1";
     }
 }
