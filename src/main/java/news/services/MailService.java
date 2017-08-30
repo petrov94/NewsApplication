@@ -13,17 +13,15 @@ import java.util.Properties;
 public class MailService {
     private static String USER_NAME = "";  // GMail user name (just the part before "@gmail.com")
     private static String PASSWORD = ""; // GMail password
-    private static String RECIPIENT = "";
-    public static void sendMail(String... args ){
+    public static void sendMail(String to){
         String from = USER_NAME;
         String pass = PASSWORD;
-        String[] to = { RECIPIENT }; // list of recipient email addresses
         String subject = "Top News - The daily news ";
         String body = "Please find attached the .pdf file with the news from the last day.";
 
         sendFromGMail(from, pass, to, subject, body);
     }
-    private static void sendFromGMail(String from, String pass, String[] to, String subject, String body) {
+    private static void sendFromGMail(String from, String pass, String to, String subject, String body) {
         Properties props = System.getProperties();
         String host = "smtp.gmail.com";
         props.put("mail.smtp.starttls.enable", "true");
@@ -38,17 +36,8 @@ public class MailService {
 
         try {
             message.setFrom(new InternetAddress(from));
-            InternetAddress[] toAddress = new InternetAddress[to.length];
-
-            // To get the array of addresses
-            for( int i = 0; i < to.length; i++ ) {
-                toAddress[i] = new InternetAddress(to[i]);
-            }
-
-            for( int i = 0; i < toAddress.length; i++) {
-                message.addRecipient(Message.RecipientType.TO, toAddress[i]);
-            }
-
+            InternetAddress toAddress = new InternetAddress(to);
+            message.addRecipient(Message.RecipientType.TO, toAddress);
             message.setSubject(subject);
             MimeBodyPart messageBodyPart = new MimeBodyPart();
             messageBodyPart.setContent(body, "text/html");

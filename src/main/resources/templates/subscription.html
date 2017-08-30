@@ -41,13 +41,19 @@
             display: none;
             border: 1px #dadada solid;
         }
-
         #checkboxes label {
             display: block;
         }
-
         #checkboxes label:hover {
             background-color: #1e90ff;
+        }
+        #rightbod {
+            display:inline-block;
+            height:8200px;
+            width:2500px;
+            position: absolute;
+            left: 30%;
+            top: 25%;
         }
     </style>
 
@@ -97,37 +103,37 @@
     </div>
 </div>
 
-<div>
-            <h3>Subscribe</h3>
-            <p>Subscribe to our newsletter to get the latest scoop right to your inbox.</p>
-                <div class="multiselect">
-                    <div class="selectBox" onclick="showCheckboxes()">
-                        <select>
-                            <option>Select an option</option>
-                        </select>
-                        <div class="overSelect"></div>
-                    </div>
-                    <div id="checkboxes">
-                        <label for="one">
-                            <input type="checkbox" id="one" value="bloomberg" />Bloomberg</label>
-                        <label for="two">
-                            <input type="checkbox" id="two" value="bild"/>Bild</label>
-                        <label for="three">
-                            <input type="checkbox" id="three" value="standart" />Стандарт</label>
-                        <label for="four">
-                            <input type="checkbox" id="four" value="Dnes.bg" />Dnes.bg</label>
-                        <label for="fifth">
-                            <input type="checkbox" id="fifth" value="kaldata" />Технологии</label>
-                        <label for="sixth">
-                            <input type="checkbox" id="sixth" value="gol" />Спорт</label>
-                    </div>
-                    <input type="email" id="email" name="email"/>
-                    <form id="myform" action="/subscription" method="get">
-                        <input type="hidden" name="country" placeholder="country" autofocus="autofocus" id="country"/>
-                        <button type="button" onclick="myFunction()" >Абониране</button>
-                    </form>
-                    <p id="name_error"></p>
-                </div>
+<div id="rightbod">
+    <h3>Subscribe</h3>
+    <p>Subscribe to our newsletter to get the latest scoop right to your inbox.</p>
+    <div class="multiselect">
+        <div class="selectBox" onclick="showCheckboxes()">
+            <select class="form-control" >
+                <option>Select an option</option>
+            </select>
+            <div class="overSelect"></div>
+        </div>
+        <div id="checkboxes">
+            <label for="one">
+                <input type="checkbox" id="one" value="bloomberg" />Bloomberg</label>
+            <label for="two">
+                <input type="checkbox" id="two" value="bild"/>Bild</label>
+            <label for="three">
+                <input type="checkbox" id="three" value="standart" />Стандарт</label>
+            <label for="four">
+                <input type="checkbox" id="four" value="Dnes.bg" />Dnes.bg</label>
+            <label for="fifth">
+                <input type="checkbox" id="fifth" value="kaldata" />Технологии</label>
+            <label for="sixth">
+                <input type="checkbox" id="sixth" value="gol" />Спорт</label>
+        </div>
+        <form id="myform" action="/subscription" method="post">
+            <input type="hidden" name="country" placeholder="country" autofocus="autofocus" id="country"/>
+            <input type="email" placeholder="email" class="form-control" id="email" name="email"/>
+            <button type="button" class="btn btn-primary btn-block" onclick="myFunction()" >Абониране</button>
+        </form>
+        <p id="name_error"></p>
+    </div>
 </div><!-- /.container -->
 
 <!-- Bootstrap core JavaScript
@@ -135,7 +141,6 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script type="text/javascript">
     var expanded = false;
-
     function showCheckboxes() {
         var checkboxes = document.getElementById("checkboxes");
         if (!expanded) {
@@ -171,7 +176,7 @@
         }
         //]]>
     }
-<!-- Initialize the plugin: -->
+    <!-- Initialize the plugin: -->
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

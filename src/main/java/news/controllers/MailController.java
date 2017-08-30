@@ -2,9 +2,11 @@ package news.controllers;
 
 import com.itextpdf.text.DocumentException;
 import news.models.Article;
+import news.services.MailService;
 import news.services.PdfService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static news.controllers.HomeController.getBild;
 
@@ -20,12 +23,14 @@ import static news.controllers.HomeController.getBild;
  */
 @Controller
 public class MailController {
-    @RequestMapping(value="/subscription",method = RequestMethod.GET,params = {"country"})
-    public String bild(@RequestParam(value="country", required = true) String url, Model model) throws IOException, DocumentException {
-        String[] mediaName = url.split("_");
-        ArrayList<Article> allArticles = getAllSubscribedArticles(mediaName);
+    @RequestMapping(value="/subscription", method = RequestMethod.POST)
+    public String sendEmail(@RequestParam Map<String, String> requestParams, Model model) throws IOException, DocumentException {
+        String url = requestParams.get("country");
+        String email = requestParams.get("email");
+        String[] mediaNames = url.split("_");
+        ArrayList<Article> allArticles = getAllSubscribedArticles(mediaNames);
         PdfService.createPdf(allArticles);
-
+        MailService.sendMail(email);
         return "subscription";
     }
 

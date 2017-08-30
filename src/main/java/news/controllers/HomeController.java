@@ -1,13 +1,22 @@
 package news.controllers;
 
 import news.models.Article;
+import news.models.User;
 import news.services.RestNewsServices;
 import news.services.RssNewsService;
+import news.services.UserService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -87,6 +96,50 @@ public class HomeController {
 
     @RequestMapping("/")
     public String index() {
-        return "index";
+        return "login";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ModelAndView login(@RequestParam Map<String, String> requestParams) throws SQLException, ClassNotFoundException {
+        ModelAndView model = new ModelAndView("login");
+        String userName = requestParams.get("username");
+        String password = requestParams.get("password");
+
+        UserService service = new UserService();
+        boolean loginSuccess = service.getUserByNameAndPassword(userName, password);
+        if (!loginSuccess) {
+            model.addObject("error", loginSuccess);
+            return model;
+        }
+        return new ModelAndView("redirect:/standart");
+    }
+
+    @RequestMapping(value = "/registration", method = RequestMethod.GET)
+    public String registration() {
+        return "registration";
+    }
+
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    public String registrationUser(@RequestParam Map<String, String> requestParams, Model model) throws ClassNotFoundException {
+        String userName = requestParams.get("username");
+        String password = requestParams.get("password");
+        if (!(stringNotNullAndEmpty(userName) && stringNotNullAndEmpty(password))) {
+            model.addAttribute("successMessage", "Give a valid username and password");
+            return "registration";
+        }
+        java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        User newUser = new User();
+        newUser.setUsername(userName);
+        newUser.setPassword(password);
+        newUser.setSubscription(date);
+        UserService service = new UserService();
+        service.insertUser(newUser);
+        model.addAttribute("successMessage", "The user was successfully created");
+        return "registration";
+    }
+
+
+    private static boolean stringNotNullAndEmpty(String string) {
+        return string != null && (!string.isEmpty()) ? true : false;
     }
 }
